@@ -1,4 +1,4 @@
-package: algo
+package: graph-algo
 import:
 - package: github.com/ZhangGuangxu/stack
   version: 917729079b279ebde1d230eac3e4abdcc1e76d3a

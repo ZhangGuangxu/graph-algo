@@ -10,6 +10,7 @@ var pn = fmt.Println
 var pf = fmt.Printf
 
 func main() {
+	pn("directional")
 	{
 		md := mapData{}
 		err := md.load("bin/a.map")
@@ -71,5 +72,59 @@ func main() {
 		s := stack.NewStack()
 		s.Push(1)
 		s.Pop()
+	}
+
+	pn("non-directional")
+	{
+		md := mapData{}
+		err := md.load("bin/a2.map")
+		if err != nil {
+			err = md.load("./a2.map")
+			if err != nil {
+				err = md.load("../../bin/a2.map")
+				if err != nil {
+					pf("load a.map got error %v\n", err)
+					return
+				}
+			}
+		}
+		md.show()
+		pn()
+
+		var allIndex sort.IntSlice
+		for k := range md.edgesMap {
+			allIndex = append(allIndex, k)
+		}
+		sort.Sort(allIndex)
+
+		m := make(map[int]map[int]float32)
+
+		// non-directional
+		g := newGraph()
+		for _, from := range allIndex {
+			g.addNode(newGraphNode(from))
+
+			edges := md.edgesMap[from]
+			for to, edge := range edges {
+				g.addEdge(newGraphEdge(from, to, edge.Cost))
+				v, ok := m[to]
+				if ok {
+					v[from] = edge.Cost
+				} else {
+					m[to] = make(map[int]float32)
+					m[to][from] = edge.Cost
+				}
+			}
+
+			for to, cost := range m[from] {
+				g.addEdge(newGraphEdge(from, to, cost))
+				delete(m[from], to)
+			}
+		}
+		g.show()
+
+		bs := newBiBFS(g, newGraphNode(0), newGraphNode(5))
+		pn(bs.search())
+		pn(bs.index)
 	}
 }

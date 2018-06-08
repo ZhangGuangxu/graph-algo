@@ -1,5 +1,5 @@
-hash: 1ebd97985ce34dc6c9b2a6243f6e11f111ad1fa759c81f1d104c8da9d834c0d3
-updated: 2018-06-08T07:43:10.9557858+08:00
+hash: 283c686ee7281b03bd0f61a6dd56bba50116c60e96675afa11589e6f86b07f26
+updated: 2018-06-08T20:36:05.4164458+08:00
 imports:
 - name: github.com/json-iterator/go
   version: ca39e5af3ece67bbcda3d0f4f56a8e24d9f2dad4
