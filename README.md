@@ -1,4 +1,5 @@
 # graph-algo
+To learn graph algorithm from the book "Programming Game AI by Example", wrote by Mat Buckland, I created this project.  
 Just for self-learning. Some graph algorithm implemented in Go.  
 For now, it includes deep-first-search, branch-first-search.  
 Deep-first-search uses a stack as its core data architecture.  
