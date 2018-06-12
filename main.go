@@ -127,4 +127,80 @@ func main() {
 		pn(bs.search())
 		pn(bs.index)
 	}
+
+	pn("directional")
+	{
+		md := mapData{}
+		err := md.load("bin/a.map")
+		if err != nil {
+			err = md.load("./a.map")
+			if err != nil {
+				err = md.load("../../bin/a.map")
+				if err != nil {
+					pf("load a.map got error %v\n", err)
+					return
+				}
+			}
+		}
+		md.show()
+		pn()
+
+		var allIndex sort.IntSlice
+		for k := range md.edgesMap {
+			allIndex = append(allIndex, k)
+		}
+		sort.Sort(allIndex)
+
+		g := newGraph()
+		for _, from := range allIndex {
+			g.addNode(newGraphNode(from))
+			edges := md.edgesMap[from]
+			for to, edge := range edges {
+				g.addEdge(newGraphEdge(from, to, edge.Cost))
+			}
+		}
+		g.show()
+
+		d := NewDijkstra(g, 4, 2)
+		d.Search()
+		pn(d.PathToTarget())
+	}
+
+	pn("directional astar")
+	{
+		md := mapData{}
+		err := md.load("bin/a.map")
+		if err != nil {
+			err = md.load("./a.map")
+			if err != nil {
+				err = md.load("../../bin/a.map")
+				if err != nil {
+					pf("load a.map got error %v\n", err)
+					return
+				}
+			}
+		}
+		md.show()
+		pn()
+
+		var allIndex sort.IntSlice
+		for k := range md.edgesMap {
+			allIndex = append(allIndex, k)
+		}
+		sort.Sort(allIndex)
+
+		g := newGraph()
+		for _, from := range allIndex {
+			g.addNode(newGraphNode(from))
+			edges := md.edgesMap[from]
+			for to, edge := range edges {
+				g.addEdge(newGraphEdge(from, to, edge.Cost))
+			}
+		}
+		g.show()
+
+		d := NewAstar(g, 4, 2)
+		d.Search()
+		pn(d.PathToTarget())
+	}
 }
