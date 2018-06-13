@@ -58,8 +58,8 @@ func NewIndexedPriorityQueueMinWithNWayAndSize(cost map[int]float32, nWay int, s
 	}
 }
 
-// nodeIndexA is smaller than nodeIndexB
-func (h *IndexedPriorityQueueMin) compare(nodeIndexA, nodeIndexB int) bool {
+// isGreater returns true if cost to nodeIndexA is greater than cost to nodeIndexB, otherwise false.
+func (h *IndexedPriorityQueueMin) isGreater(nodeIndexA, nodeIndexB int) bool {
 	costA, ok := h.cost[nodeIndexA]
 	if !ok {
 		panic(ErrCostNotExist)
@@ -119,15 +119,21 @@ func (h *IndexedPriorityQueueMin) Pop() (int, error) {
 	}
 
 	v := h.data[0]
-	h.data[0] = h.data[h.tail]
 	delete(h.nodeIndexToItemIndex, v)
-	h.nodeIndexToItemIndex[h.data[h.tail]] = 0
+	if h.tail > 0 {
+		h.data[0] = h.data[h.tail]
+		h.nodeIndexToItemIndex[h.data[h.tail]] = 0
+	}
 	h.tail--
 	h.siftDown(0)
 	return v, nil
 }
 
 func (h *IndexedPriorityQueueMin) siftUp(begin int) (swap bool) {
+	if h.IsEmpty() {
+		return
+	}
+
 	idx := begin
 	parentIdx := 0
 
@@ -141,7 +147,7 @@ func (h *IndexedPriorityQueueMin) siftUp(begin int) (swap bool) {
 		} else {
 			parentIdx = idx / h.way
 		}
-		if h.compare(h.data[parentIdx], h.data[idx]) {
+		if h.isGreater(h.data[parentIdx], h.data[idx]) {
 			h.nodeIndexToItemIndex[h.data[parentIdx]] = idx
 			h.nodeIndexToItemIndex[h.data[idx]] = parentIdx
 			h.data[parentIdx], h.data[idx] = h.data[idx], h.data[parentIdx]
@@ -154,7 +160,7 @@ func (h *IndexedPriorityQueueMin) siftUp(begin int) (swap bool) {
 }
 
 func (h *IndexedPriorityQueueMin) siftDown(begin int) (swap bool) {
-	if h.tail <= 0 {
+	if h.IsEmpty() {
 		return
 	}
 
@@ -170,16 +176,16 @@ func (h *IndexedPriorityQueueMin) siftDown(begin int) (swap bool) {
 
 func (h *IndexedPriorityQueueMin) compareWithChildren(idx int) (newIdx int, swap bool) {
 	newIdx = idx
-	max := h.data[idx]
+	min := h.data[idx]
 
 	for a := 1; a <= h.way; a++ {
 		i := idx*h.way + a
 		if i > h.tail {
 			break
 		}
-		if h.compare(max, h.data[i]) {
+		if h.isGreater(min, h.data[i]) {
 			newIdx = i
-			max = h.data[i]
+			min = h.data[i]
 		}
 	}
 
