@@ -277,14 +277,13 @@ func (s *rbfs) run() {
 }
 
 func (s *rbfs) checkJoin(idx int) bool {
-	s.mx.Lock()
-	_, ok := s.record[idx]
-	s.mx.Unlock()
-	return ok
+	return s.hasRecord(idx)
 }
 
 func (s *rbfs) hasRecord(idx int) bool {
+	s.mx.Lock()
 	_, ok := s.record[idx]
+	s.mx.Unlock()
 	return ok
 }
 

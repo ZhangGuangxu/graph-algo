@@ -74,7 +74,7 @@ func main() {
 		s.Pop()
 	}
 
-	pn("non-directional")
+	pn("non-directional Bidirectional BFS")
 	{
 		md := mapData{}
 		err := md.load("bin/a2.map")

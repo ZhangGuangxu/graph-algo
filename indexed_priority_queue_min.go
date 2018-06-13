@@ -136,11 +136,10 @@ func (h *IndexedPriorityQueueMin) siftUp(begin int) (swap bool) {
 			return
 		}
 
-		r := idx % h.way
-		if r == 0 {
-			parentIdx = (idx - h.way) / h.way
+		if idx%h.way == 0 {
+			parentIdx = idx/h.way - 1
 		} else {
-			parentIdx = (idx - r) / h.way
+			parentIdx = idx / h.way
 		}
 		if h.compare(h.data[parentIdx], h.data[idx]) {
 			h.nodeIndexToItemIndex[h.data[parentIdx]] = idx
