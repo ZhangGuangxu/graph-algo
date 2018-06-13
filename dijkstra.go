@@ -28,22 +28,21 @@ func NewDijkstra(g *graph, s, t int) *Dijkstra {
 // Search trys to find the shortest path from source to target.
 // source is a node index, same as target.
 func (d *Dijkstra) Search() {
+	d.frontier[d.source] = graphEdge{From: d.source, To: d.source} // source node is special
 	d.cost[d.source] = 0
 	pq := NewIndexedPriorityQueueMin(d.cost)
 	pq.Insert(d.source)
 
 	for !pq.IsEmpty() {
-		i, err := pq.Pop()
+		idx, err := pq.Pop()
 		if err != nil {
 			d.err = err
 			return
 		}
 
-		edge, ok := d.frontier[i]
-		if ok {
-			d.spt[i] = edge
-			i = edge.To
-		}
+		edge := d.frontier[idx]
+		d.spt[idx] = edge
+		i := edge.To
 
 		if i == d.target {
 			return
